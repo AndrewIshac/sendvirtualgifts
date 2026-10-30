@@ -1,7 +1,9 @@
 # Blog guide for sendvirtualgifts.com and senddigitalgift.com
 
 These two sites are small, keyword-focused companions to SendLove (https://sendlove.io).
-Every 48 hours, one new post is published on each site. This file is the brief for writing them.
+A scheduled task rotates between sendlove.io, senddigitalgift.com and sendvirtualgifts.com: one post every
+2 days on ONE site, so each site gets a new post about every 6 days. This file is the brief for the two
+side sites.
 Andrew (the owner) can edit this file at any time; the latest version always wins.
 
 ## What each site is about
@@ -9,12 +11,14 @@ Andrew (the owner) can edit this file at any time; the latest version always win
   relationships, love letters, virtual flowers, virtual wedding invitations.
 - **senddigitalgift.com** targets "digital gift" searches: digital gifts that aren't gift cards, gifts for
   family and friends, digital wedding invitations, practical how-tos.
-- Don't publish the same topic on both sites the same day. If both sites cover a similar theme over time,
-  give each its own angle and wording ("virtual" vs "digital").
+- **No topic may appear on more than one of the three sites** (sendvirtualgifts.com, senddigitalgift.com,
+  sendlove.io/blog). Before choosing, check the blog lists of all three. Near-duplicates count: "wedding
+  RSVP etiquette" and "how to collect RSVPs online" are too close. Pick a clearly different question.
 
 ## Mix of topics
-- About 1 in 3 posts should be about **weddings**, especially **wedding invitations**, linking to
-  https://sendlove.io/weddings (use the `{weddings}` placeholder and set `"cta": "weddings"`).
+- About 1 in 3 posts should be about **weddings**, especially **wedding invitations**. Only link to
+  https://sendlove.io/weddings (`{weddings}`, `"cta": "weddings"`) when the post is about creating or
+  sending invitations, not on every wedding post.
 - The rest: gifts for partners, long-distance relationships, friends and family, what to write, how-tos,
   honest comparisons of gift sites.
 - Seasonal posts (Valentine's Day, Christmas, Mother's Day) are allowed and useful when published
@@ -45,6 +49,19 @@ Andrew (the owner) can edit this file at any time; the latest version always win
 7. Don't touch existing posts, guide pages or the home page by hand. The script updates the blog index,
    the home page "From the blog" block and the sitemap automatically.
 
+## Vary every post so the blog never looks automated
+- Rotate the format. Look at the last 3 posts on this site and use a different one: step-by-step guide,
+  comparison with a table, checklist, wording/examples library, myth vs reality, decision guide
+  ("which one should you pick?"), timeline/planner, troubleshooting ("what to do when...").
+- Vary the title pattern too (not always "How to...", "Best...", or "X Ideas").
+- Vary length naturally within the target range, and vary how many headings and lists you use.
+
+## Depth (what makes a post worth ranking)
+- Answer the main question fully, then the 4-6 follow-up questions people actually ask next.
+- Add something the top results don't have: a worked example, a decision table, ready-to-copy wording,
+  a timeline, common mistakes and how to fix them, or a clear recommendation for different situations.
+- Specific beats general: real scenarios, exact wording, concrete numbers only when sourced.
+
 ## How to write so it reads like a person
 - Write like a friend who knows the topic: contractions, plain words, a clear opinion.
 - Mix short sentences with longer ones. Start some paragraphs with "Honestly," "Here's the thing," or a
@@ -61,11 +78,15 @@ Andrew (the owner) can edit this file at any time; the latest version always win
 - **quick**: a 2–3 sentence direct answer to the main question (this is what featured snippets and AI
   answers quote). Put the answer first, no wind-up.
 - **H2s** phrased the way people search ("How do you word a wedding invitation for adults only?").
-- **Length:** 1,500–2,200 words of body. The script rejects under 1,300.
+- **Length:** 1,800–2,600 words of body. The script rejects under 1,500.
 - Include at least one table or numbered list where it genuinely helps.
 - **faq**: 4–6 real questions with direct 1–3 sentence answers.
-- **Links:** link to SendLove at least once in the body (`{sendlove}` or `{weddings}`), ideally near the end
-  in most posts; link to 2–3 existing posts or guide pages on the same site with relative links
+- **Links to SendLove only when relevant.** Link (`{sendlove}` or `{weddings}`) and add a `cta` box only
+  when the post is genuinely about sending a gift, a letter, flowers or a wedding invitation, and only
+  where it helps the reader. Advice, etiquette and relationship posts often have no SendLove link and no
+  `cta` at all. Roughly half the posts or fewer should mention SendLove. Never more than 2 SendLove links
+  in one post.
+- Always link to 2–3 existing posts or guide pages on the same site with relative links
   (`/blog/slug/`, `/guide-slug/`), and list 2–3 in `related`.
 
 ## Topic bank (pick one that isn't already published; you may also choose a better keyword you find)

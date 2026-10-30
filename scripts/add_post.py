@@ -17,10 +17,12 @@ post.json fields:
   body        article HTML (h2/h3/p/ul/ol/table/blockquote only). Placeholders:
                 {sendlove}  -> tracked link to https://sendlove.io/
                 {weddings}  -> tracked link to https://sendlove.io/weddings
+              Links to SendLove are optional: use them only where they genuinely help the reader.
   faq         list of [question, answer] pairs (4-6)
   related     list of existing blog slugs on THIS site (2-3)
   guides      optional list of existing guide page slugs on THIS site
-  cta         optional "weddings" to point the end box at sendlove.io/weddings
+  cta         optional: "weddings" (box linking sendlove.io/weddings), "gifts" (box linking sendlove.io),
+              or omit for no box. Only add a box when the post is genuinely about gifts or invitations.
   date        optional YYYY-MM-DD (defaults to today)
 
 Also rebuilds blog/index.html, the "From the blog" block on the home page, and sitemap.xml.
@@ -115,7 +117,7 @@ def validate_post(p, posts):
     if not 30 <= len(p["title"]) <= 70: errs.append(f"title length {len(p['title'])} (aim 50-65)")
     if not 100 <= len(p["desc"]) <= 170: errs.append(f"desc length {len(p['desc'])} (aim 130-160)")
     n = words(p["body"])
-    if n < 1300: errs.append(f"body only {n} words; write at least 1,300 (target 1,500-2,200)")
+    if n < 1500: errs.append(f"body only {n} words; write at least 1,500 (target 1,800-2,600)")
     if not 4 <= len(p["faq"]) <= 7: errs.append("faq needs 4-6 questions")
     alltext = " ".join([p["title"], p["desc"], p["h1"], p["quick"], p["lead"], re.sub(r"<[^>]+>", " ", p["body"])] + [q + " " + a for q, a in p["faq"]])
     if "$" in alltext or re.search(r"\b\d+(\.\d+)?\s?(USD|CAD|dollars?)\b", alltext, re.I): errs.append("no prices allowed anywhere")
@@ -124,7 +126,6 @@ def validate_post(p, posts):
     if re.search(r"\b(delve|tapestry|in today's|whether you're|game[- ]changer|unlock the|elevate your|seamless(ly)?)\b", alltext, re.I):
         errs.append("contains stock AI phrasing (delve/tapestry/in today's/whether you're/game-changer/unlock/elevate/seamless)")
     if alltext.count("—") > 3: errs.append("too many em dashes; use commas or periods")
-    if not re.search(r"\{(sendlove|weddings)\}", p["body"]): errs.append("body should link to SendLove at least once ({sendlove} or {weddings})")
     for s in p["related"]:
         if not os.path.exists(f"blog/{s}/index.html"): errs.append(f"related slug not found: {s}")
     for g in p.get("guides", []):
@@ -133,6 +134,7 @@ def validate_post(p, posts):
         t = href.strip("/"); t = t if "." in t.rsplit("/", 1)[-1] else ((t + "/index.html") if t else "index.html")
         if not os.path.exists(t): errs.append(f"broken internal link in body: {href}")
     if "<h1" in p["body"]: errs.append("body must not contain <h1>")
+    if p.get("cta") not in (None, "", "gifts", "weddings"): errs.append('cta must be "gifts", "weddings" or omitted')
     return errs
 
 def render_post(p):
@@ -145,8 +147,16 @@ def render_post(p):
     faq = "".join(f"<details><summary>{esc(q)}</summary><p>{esc(a)}</p></details>" for q, a in p["faq"])
     if p.get("cta") == "weddings":
         cta = ("Make your wedding invitation", "Add your names, date, venue and photos, preview it, and send each guest their own link.", utm("/weddings", p["slug"] + "-cta"), "See wedding invitations on SendLove")
-    else:
+    elif p.get("cta") == "gifts":
         cta = ("Make one in a few minutes", "Pick a gift, add your words and photos, and send it as a link.", utm("/", p["slug"] + "-cta"), "View gifts on SendLove")
+    else:
+        cta = None
+    cta_html = "" if not cta else f"""    <div class="inline-cta">
+      <h2 style="margin-top:0">{cta[0]}</h2>
+      <p>{cta[1]}</p>
+      <a class="btn" href="{cta[2]}">{cta[3]}</a>
+    </div>
+"""
     nice = datetime.date.fromisoformat(date).strftime("%B %-d, %Y")
     ld = {"@context": "https://schema.org", "@graph": [
         {"@type": "BlogPosting", "headline": p["title"], "description": p["desc"], "url": url, "mainEntityOfPage": url,
@@ -166,12 +176,7 @@ def render_post(p):
     <p class="lead">{esc(p['lead'])}</p>
     {SITE['disc'] if p.get('disclosure') else ''}
 {body}
-    <div class="inline-cta">
-      <h2 style="margin-top:0">{cta[0]}</h2>
-      <p>{cta[1]}</p>
-      <a class="btn" href="{cta[2]}">{cta[3]}</a>
-    </div>
-    <section class="faq" style="padding:0">
+{cta_html}    <section class="faq" style="padding:0">
       <h2>Frequently asked questions</h2>
       {faq}
     </section>

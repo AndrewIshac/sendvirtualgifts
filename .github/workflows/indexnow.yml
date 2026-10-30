@@ -1,0 +1,24 @@
+name: IndexNow ping
+on:
+  push:
+    branches: [main]
+    paths: [sitemap.xml]
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait for Vercel deploy
+        run: sleep 120
+      - name: Send sitemap URLs to IndexNow (Bing, Yandex and others)
+        run: |
+          python3 - <<'PY'
+          import json, re, urllib.request
+          host, key = "sendvirtualgifts.com", "b94d766dc75053d704fcc9d9d275b5f4"
+          urls = re.findall(r"<loc>(.*?)</loc>", open("sitemap.xml").read())
+          body = json.dumps({"host": host, "key": key, "keyLocation": f"https://{host}/{key}.txt", "urlList": urls}).encode()
+          req = urllib.request.Request("https://api.indexnow.org/indexnow", data=body, headers={"Content-Type": "application/json; charset=utf-8"})
+          with urllib.request.urlopen(req) as r:
+              print("IndexNow response:", r.status, "for", len(urls), "URLs")
+          PY
